@@ -40,8 +40,8 @@ extension RequestManager {
     
     public func fullURL(url: String) -> URLStringConvertible {
         let str = baseURL.string
-        baseURL.string = str + url
-        return baseURL
+        let urlString = URLString(string: str + url)
+        return urlString
     }
 }
 

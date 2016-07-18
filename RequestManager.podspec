@@ -30,7 +30,7 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'RequestManager/Classes/**/*'
+  s.source_files = 'RequestManager/Classes/**/*.swift'
 
   s.dependency 'Alamofire', '~> 3.4'
   s.dependency 'SwiftyJSON', '~> 2.3'

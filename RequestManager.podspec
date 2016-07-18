@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/<GITHUB_USERNAME>/RequestManager'
+  s.homepage         = 'https://github.com/SnowyWhite/RequestManager.git'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Nick Kibish' => 'nick.kibish@gmail.com' }
@@ -31,6 +31,10 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'RequestManager/Classes/**/*'
+
+  s.dependency 'Alamofire', '~> 3.4'
+  s.dependency 'SwiftyJSON', '~> 2.3'
+  s.dependency 'Log', '~> 0.5'
   
   # s.resource_bundles = {
   #   'RequestManager' => ['RequestManager/Assets/*.png']

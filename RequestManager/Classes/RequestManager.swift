@@ -11,11 +11,25 @@ import Alamofire
 import SwiftyJSON
 import Log
 
+public class URLString: NSObject, URLStringConvertible {
+    public var string: String
+    public init(string: String) {
+        self.string = string
+    }
+    
+    public var URLString: String {
+        guard let str = string.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet()) else {
+            return ""
+        }
+        return str
+    }
+}
+
 public class RequestManager {
     public static let sharedInstance = RequestManager()
     public var shouldPrintSuccedResponse = false
     public var shouldPrintFailuredResponse = true
-    public var baseURL: String = ""
+    public var baseURL: URLString = URLString(string: "")
 }
 
 //MARK: - Util Methods 
@@ -24,8 +38,10 @@ extension RequestManager {
         return nil
     }
     
-    public func fullURL(url: String) -> String {
-        return baseURL + url 
+    public func fullURL(url: String) -> URLStringConvertible {
+        let str = baseURL.string
+        baseURL.string = str + url
+        return baseURL
     }
 }
 
@@ -64,5 +80,13 @@ extension RequestManager {
                     break
                 }
         }
+    }
+    
+    public func request(method: Alamofire.Method,
+                        baseURL: String,
+                        parameters: [String: AnyObject]?,
+                        success: ((JSON?) -> ())?,
+                        failure: ((NSError?) -> ())?) {
+        request(method, url: fullURL(baseURL), parameters: parameters, success: success, failure: failure)
     }
 }

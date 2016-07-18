@@ -17,14 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="https://www.google.com/" borderStyle="roundedRect" placeholder="Request URL" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="c2c-sv-xrg">
-                                <rect key="frame" x="208" y="239" width="184" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="s2e-au-71b"/>
-                                </connections>
-                            </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hQU-bZ-GJf">
                                 <rect key="frame" x="251" y="285" width="98" height="30"/>
                                 <state key="normal" title="Make Request"/>
@@ -38,24 +30,56 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d2L-ld-CFR">
+                                <rect key="frame" x="192" y="239" width="217" height="30"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ru/" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BAC-lt-L0B">
+                                        <rect key="frame" x="176" y="0.0" width="39" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="http://www.apple.com/" borderStyle="roundedRect" placeholder="Request URL" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="c2c-sv-xrg">
+                                        <rect key="frame" x="0.0" y="0.0" width="168" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="vXZ-lx-hvc" id="s2e-au-71b"/>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="c2c-sv-xrg" secondAttribute="bottom" id="1Zm-sg-7zd"/>
+                                    <constraint firstItem="BAC-lt-L0B" firstAttribute="top" secondItem="d2L-ld-CFR" secondAttribute="top" id="BHZ-m7-Ls9"/>
+                                    <constraint firstItem="c2c-sv-xrg" firstAttribute="leading" secondItem="d2L-ld-CFR" secondAttribute="leading" id="CVY-8X-VzE"/>
+                                    <constraint firstItem="c2c-sv-xrg" firstAttribute="top" secondItem="d2L-ld-CFR" secondAttribute="top" id="Eae-ua-x5k"/>
+                                    <constraint firstItem="BAC-lt-L0B" firstAttribute="leading" secondItem="c2c-sv-xrg" secondAttribute="trailing" constant="8" id="Nzn-8p-Zwa"/>
+                                    <constraint firstAttribute="bottom" secondItem="BAC-lt-L0B" secondAttribute="bottom" id="SUs-G3-SQS"/>
+                                    <constraint firstItem="c2c-sv-xrg" firstAttribute="centerY" secondItem="d2L-ld-CFR" secondAttribute="centerY" id="UdA-O7-OUZ"/>
+                                    <constraint firstItem="BAC-lt-L0B" firstAttribute="centerY" secondItem="d2L-ld-CFR" secondAttribute="centerY" id="dR9-ut-44t"/>
+                                    <constraint firstAttribute="trailing" secondItem="BAC-lt-L0B" secondAttribute="trailing" id="wGp-zo-Opw"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="hQU-bZ-GJf" firstAttribute="top" secondItem="c2c-sv-xrg" secondAttribute="bottom" constant="16" id="3lX-1v-x50"/>
+                            <constraint firstItem="d2L-ld-CFR" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="6fh-Xa-Pyy"/>
                             <constraint firstItem="hQU-bZ-GJf" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="KCy-Ga-bMw"/>
                             <constraint firstItem="0yR-l5-QKh" firstAttribute="top" secondItem="hQU-bZ-GJf" secondAttribute="bottom" constant="16" id="OUh-NY-pBI"/>
+                            <constraint firstItem="hQU-bZ-GJf" firstAttribute="top" secondItem="d2L-ld-CFR" secondAttribute="bottom" constant="16" id="WcK-vm-L2j"/>
                             <constraint firstItem="hQU-bZ-GJf" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="XRx-2t-Ppl"/>
                             <constraint firstItem="0yR-l5-QKh" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="Xaw-Vy-I58"/>
-                            <constraint firstItem="c2c-sv-xrg" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="zMR-G3-nmE"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="baseURLTF" destination="BAC-lt-L0B" id="qJa-mZ-oTa"/>
                         <outlet property="requestStatulLabel" destination="0yR-l5-QKh" id="X1a-iY-0aS"/>
                         <outlet property="requestURLTF" destination="c2c-sv-xrg" id="qcf-kh-hWu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="549" y="385"/>
         </scene>
     </scenes>
 </document>

@@ -12,18 +12,20 @@ import RequestManager
 class ViewController: UIViewController {
     @IBOutlet var requestStatulLabel: UILabel!
     @IBOutlet var requestURLTF: UITextField!
+    @IBOutlet var baseURLTF: UITextField!
     
     @IBAction func makeRequest(sender: AnyObject) {
         requestStatulLabel.text = "Loading..."
         requestStatulLabel.textColor = UIColor.lightGrayColor()
         
         RequestManager.sharedInstance.shouldPrintSuccedResponse = true
-        RequestManager.sharedInstance.request(.GET, url: requestURLTF.text!, parameters: nil, success: { (json) in
-            self.requestStatulLabel.text = "OK"
+        RequestManager.sharedInstance.baseURL = URLString(string: requestURLTF.text!)
+        RequestManager.sharedInstance.request(.GET, baseURL: baseURLTF.text!, parameters: nil, success: { (json) in
             self.requestStatulLabel.textColor = UIColor.greenColor()
+            self.requestStatulLabel.text = "OK"
             }) { (error) in
-                self.requestStatulLabel.text = "Error"
                 self.requestStatulLabel.textColor = UIColor.redColor()
+                self.requestStatulLabel.text = "Error"
         }
     }
 

@@ -8,8 +8,8 @@
 
 import Foundation
 
-class AbstractOperation: NSOperation {
-    enum State: String {
+public class AbstractOperation: NSOperation {
+    public enum State: String {
         case Ready, Executing, Finished
         
         private var keyPath: String {
@@ -17,7 +17,7 @@ class AbstractOperation: NSOperation {
         }
     }
     
-    var state = State.Ready {
+    public var state = State.Ready {
         willSet {
             willChangeValueForKey(newValue.keyPath)
             willChangeValueForKey(state.keyPath)
@@ -28,23 +28,23 @@ class AbstractOperation: NSOperation {
         }
     }
     
-    override var ready: Bool {
+    override public var ready: Bool {
         return super.ready && state == .Ready
     }
     
-    override var executing: Bool {
+    override public var executing: Bool {
         return state == .Executing
     }
     
-    override var finished: Bool {
+    override public var finished: Bool {
         return state == .Finished
     }
     
-    override var asynchronous: Bool {
+    override public var asynchronous: Bool {
         return true
     }
     
-    internal override func start() {
+    public override func start() {
         if cancelled {
             state = .Finished
             return
@@ -54,7 +54,7 @@ class AbstractOperation: NSOperation {
         state = .Executing
     }
     
-    internal override func cancel() {
+    public override func cancel() {
         state = .Finished
     }
 }

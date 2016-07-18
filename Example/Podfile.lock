@@ -17,7 +17,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: 01a82e2f6c0f860ade35534c8dd88be61bdef40c
   Log: 5972312cb85cffbc56407b612936b610eb4af8a5
-  RequestManager: 4284bbfb3d3b9cb913f09d755e90fdd8f60a385a
+  RequestManager: ef3faa1992cdc6956a8fbee30775bbfe82a2daed
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
 COCOAPODS: 0.39.0

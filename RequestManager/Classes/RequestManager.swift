@@ -62,6 +62,7 @@ extension RequestManager {
                 case .Success(let data):
                     let json = JSON(data: data)
                     if self.shouldPrintSuccedResponse {
+                        Log.debug("Request OK: \(response.request?.URL)")
                         Log.debug("Response OK: \(dataString)")
                     }
                     
@@ -71,6 +72,7 @@ extension RequestManager {
                     break
                 case .Failure(let error):
                     if self.shouldPrintFailuredResponse {
+                        Log.debug("Request ERROR: \(response.request?.URL)")
                         Log.error("Response ERROR: \(dataString)")
                     }
                     

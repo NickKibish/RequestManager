@@ -11,29 +11,29 @@ import Alamofire
 import SwiftyJSON
 import Log
 
-class RequestManager {
-    static let sharedInstance = RequestManager()
-    var shouldPrintSuccedResponse = false
-    var shouldPrintFailuredResponse = true
-    var baseURL: String = ""
+public class RequestManager {
+    public static let sharedInstance = RequestManager()
+    public var shouldPrintSuccedResponse = false
+    public var shouldPrintFailuredResponse = true
+    public var baseURL: String = ""
 }
 
 //MARK: - Util Methods 
 extension RequestManager {
-    var headers: [String: String]? {
+    public var headers: [String: String]? {
         return nil
     }
     
-    func fullURL(url: String) -> String {
+    public func fullURL(url: String) -> String {
         return baseURL + url 
     }
 }
 
 //MARK: - Request Methods
 extension RequestManager {
-    func request(method: Alamofire.Method,
+    public func request(method: Alamofire.Method,
                  url: URLStringConvertible,
-                 parameters: [String: AnyObject],
+                 parameters: [String: AnyObject]?,
                  success: ((JSON?) -> ())?,
                  failure: ((NSError?) -> ())?) {
         

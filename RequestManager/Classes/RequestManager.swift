@@ -26,6 +26,9 @@ public class URLString: NSObject, URLStringConvertible {
 }
 
 public class RequestManager {
+    public typealias Success = ((JSON?) -> ())?
+    public typealias Failure = ((NSError?) -> ())?
+    
     public static let sharedInstance = RequestManager()
     public var shouldPrintSuccedResponse = false
     public var shouldPrintFailuredResponse = true
@@ -50,8 +53,8 @@ extension RequestManager {
     public func request(method: Alamofire.Method,
                  url: URLStringConvertible,
                  parameters: [String: AnyObject]?,
-                 success: ((JSON?) -> ())?,
-                 failure: ((NSError?) -> ())?) {
+                 success: Success,
+                 failure: Failure) {
         
         Alamofire.request(method, url, headers: headers, parameters: parameters, encoding: .JSON)
             .validate(statusCode: 200..<300)
@@ -87,8 +90,8 @@ extension RequestManager {
     public func request(method: Alamofire.Method,
                         baseURL: String,
                         parameters: [String: AnyObject]?,
-                        success: ((JSON?) -> ())?,
-                        failure: ((NSError?) -> ())?) {
+                        success: Success,
+                        failure: Failure) {
         request(method, url: fullURL(baseURL), parameters: parameters, success: success, failure: failure)
     }
 }

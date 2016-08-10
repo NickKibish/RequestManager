@@ -27,7 +27,7 @@ public class URLString: NSObject, URLStringConvertible {
 
 public class RequestManager {
     public typealias Success = ((JSON?) -> ())?
-    public typealias Failure = ((NSError?) -> ())?
+    public typealias Failure = ((JSON?, NSError?) -> ())?
     
     public static let sharedInstance = RequestManager()
     public var shouldPrintSuccedResponse = false
@@ -79,8 +79,14 @@ extension RequestManager {
                         Log.error("Response ERROR: \(dataString)")
                     }
                     
-                    dispatch_async(dispatch_get_main_queue(), { 
-                        failure?(error)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        guard let data = response.data else {
+                            failure?(nil, error)
+                            return
+                        }
+                        
+                        let json = JSON(data: data)
+                        failure?(json, error)
                     })
                     break
                 }

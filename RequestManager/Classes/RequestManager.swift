@@ -13,6 +13,7 @@ import Log
 
 public class URLString: NSObject, URLStringConvertible {
     public var string: String
+    
     public init(string: String) {
         self.string = string
     }
@@ -33,6 +34,7 @@ public class RequestManager {
     public var shouldPrintSuccedResponse = false
     public var shouldPrintFailuredResponse = true
     public var baseURL: URLString = URLString(string: "")
+    public var encoding: ParameterEncoding = .JSON
 }
 
 //MARK: - Util Methods 
@@ -56,7 +58,7 @@ extension RequestManager {
                  success: Success,
                  failure: Failure) {
         
-        Alamofire.request(method, url, headers: headers, parameters: parameters, encoding: .JSON)
+        Alamofire.request(method, url, headers: headers, parameters: parameters, encoding: encoding)
             .validate(statusCode: 200..<300)
             .responseData{ response in
                 let dataString = String(data: response.data!, encoding: NSUTF8StringEncoding)

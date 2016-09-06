@@ -1,7 +1,7 @@
 PODS:
-  - Alamofire (3.4.1)
+  - Alamofire (3.4.2)
   - Log (0.5)
-  - RequestManager (0.1.0):
+  - RequestManager (0.3.0):
     - Alamofire (~> 3.4)
     - Log (~> 0.5)
     - SwiftyJSON (~> 2.3)
@@ -15,9 +15,11 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: 01a82e2f6c0f860ade35534c8dd88be61bdef40c
+  Alamofire: 6aa33201d20d069e1598891cf928883ff1888c7a
   Log: 5972312cb85cffbc56407b612936b610eb4af8a5
-  RequestManager: 76e17bb1e84292eec25bd3a7355e4a2de5587828
+  RequestManager: 3e7d1187518d29f03bdb7b418ae8faf03c27b020
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 0016cb70421baedcc7394a69afb8197f8e75b228
+
+COCOAPODS: 1.0.1

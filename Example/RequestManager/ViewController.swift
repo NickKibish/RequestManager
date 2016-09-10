@@ -23,9 +23,9 @@ class ViewController: UIViewController {
         RequestManager.sharedInstance.request(.GET, baseURL: baseURLTF.text!, parameters: nil, success: { (json) in
             self.requestStatulLabel.textColor = UIColor.greenColor()
             self.requestStatulLabel.text = "OK"
-            }) { (error) in
-                self.requestStatulLabel.textColor = UIColor.redColor()
-                self.requestStatulLabel.text = "Error"
+        }) { (error) in
+            self.requestStatulLabel.textColor = UIColor.redColor()
+            self.requestStatulLabel.text = "Error"
         }
     }
 

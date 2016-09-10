@@ -27,8 +27,10 @@ public class URLString: NSObject, URLStringConvertible {
 }
 
 public class RequestManager {
-    public typealias Success = ((JSON?, response: Response<NSData, NSError>?) -> ())?
-    public typealias Failure = ((JSON?, NSError?, response: Response<NSData, NSError>?) -> ())?
+    public typealias Success = ((JSON?) -> ())?
+    public typealias Failure = ((JSON?, NSError?) -> ())?
+    public typealias SuccessResponse = ((JSON?, response: Response<NSData, NSError>?) -> ())?
+    public typealias FailureResponse = ((JSON?, NSError?, response: Response<NSData, NSError>?) -> ())?
     
     public static let sharedInstance = RequestManager()
     public var shouldPrintSuccedResponse = false
@@ -55,8 +57,8 @@ extension RequestManager {
     public func request(method: Alamofire.Method,
                  url: URLStringConvertible,
                  parameters: [String: AnyObject]?,
-                 success: Success,
-                 failure: Failure) {
+                 success: SuccessResponse,
+                 failure: FailureResponse) {
         
         Alamofire.request(method, url, headers: headers, parameters: parameters, encoding: encoding)
             .validate(statusCode: 200..<300)
@@ -98,8 +100,20 @@ extension RequestManager {
     public func request(method: Alamofire.Method,
                         baseURL: String,
                         parameters: [String: AnyObject]?,
+                        success: SuccessResponse,
+                        failure: FailureResponse) {
+        request(method, url: fullURL(baseURL), parameters: parameters, success: success, failure: failure)
+    }
+    
+    public func request(method: Alamofire.Method,
+                        baseURL: String,
+                        parameters: [String: AnyObject]?,
                         success: Success,
                         failure: Failure) {
-        request(method, url: fullURL(baseURL), parameters: parameters, success: success, failure: failure)
+        request(method, url: fullURL(baseURL), parameters: parameters, success: { (json, response) in
+            success?(json)
+            }) { (json, error, response) in
+                failure?(json, error)
+        }
     }
 }

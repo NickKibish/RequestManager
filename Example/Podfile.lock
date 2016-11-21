@@ -1,10 +1,10 @@
 PODS:
-  - Alamofire (3.5.0)
+  - Alamofire (3.5.1)
   - Log (0.5)
-  - RequestManager (0.3.2):
+  - RequestManager (0.3.3):
     - Alamofire (~> 3.4)
     - Log (~> 0.5)
-    - SwiftyJSON (~> 2.3)
+    - SwiftyJSON (= 2.3.2)
   - SwiftyJSON (2.3.2)
 
 DEPENDENCIES:
@@ -15,9 +15,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: b70a7352335f8ea5babd0a923eb7e8eacc67b877
+  Alamofire: 0dfba1184a543e2aa160f4e39cac4e8aba48d223
   Log: 5972312cb85cffbc56407b612936b610eb4af8a5
-  RequestManager: 206581261621b2d470731eee58f6a981cfd0df21
+  RequestManager: d743408d3dad8ba281ffefe434e60f1100953d6c
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
 PODFILE CHECKSUM: 0016cb70421baedcc7394a69afb8197f8e75b228

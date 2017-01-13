@@ -14,9 +14,9 @@ class ViewController: UIViewController {
     @IBOutlet var requestURLTF: UITextField!
     @IBOutlet var baseURLTF: UITextField!
     
-    @IBAction func makeRequest(sender: AnyObject) {
+    @IBAction func makeRequest(_ sender: AnyObject) {
         requestStatulLabel.text = "Loading..."
-        requestStatulLabel.textColor = UIColor.lightGrayColor()
+        requestStatulLabel.textColor = UIColor.lightGray
         
         RequestManager.sharedInstance.shouldPrintSuccedResponse = true
         RequestManager.sharedInstance.baseURL = URLString(string: requestURLTF.text!)
@@ -32,7 +32,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true 
     }

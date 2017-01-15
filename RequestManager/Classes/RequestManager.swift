@@ -11,7 +11,30 @@ import Alamofire
 import SwiftyJSON
 import Log
 
+extension JSON {
+    init?(data: Data?) {
+        if let data = data {
+            self.init(data: data)
+        }
+        return nil
+    }
+}
 
+public protocol Route {
+    static var route: String { get }
+}
+
+public enum RequestManagerError: Error {
+    case wrongURL
+    case isntReachable
+    case needsConnection
+    
+    case httpCode400(String?)
+    case httpCode403(String?)
+    case httpCode404(String?)
+    
+    case unknownError(String?)
+}
 
 open class URLString: URLConvertible {
     open var string: String
@@ -21,7 +44,10 @@ open class URLString: URLConvertible {
     }
     
     public func asURL() throws -> URL {
-        return URL(string: <#T##String#>)
+        guard let url = URL(string: string) else {
+            throw RequestManagerError.wrongURL
+        }
+        return url
     }
     
     open var URLString: String {
@@ -35,14 +61,17 @@ open class URLString: URLConvertible {
 open class RequestManager {
     public typealias Success = ((JSON?) -> ())?
     public typealias Failure = ((JSON?, NSError?) -> ())?
-    public typealias SuccessResponse = ((JSON?, _ response: URLR) -> ())?
-    public typealias FailureResponse = ((JSON?, NSError?, _ response: Response<NSData, NSError>?) -> ())?
+    public typealias SuccessResponse = ((JSON?, _ response: HTTPURLResponse?) -> ())?
+    public typealias FailureResponse = ((JSON?, Error, _ response: HTTPURLResponse?) -> ())?
+    
+    public typealias SuccessArray<T> = ([T]) -> ()
+    public typealias SuccessDictionary<T> = ([String:T]) -> ()
+    public typealias Filure = (Error)
     
     open static let sharedInstance = RequestManager()
     open var shouldPrintSuccedResponse = false
     open var shouldPrintFailuredResponse = true
     open var baseURL: URLString = URLString(string: "")
-    open var encoding: ParameterEncoding = .JSON
 }
 
 //MARK: - Util Methods 
@@ -51,7 +80,7 @@ extension RequestManager {
         return nil
     }
     
-    public func fullURL(_ url: String) -> URLStringConvertible {
+    public func fullURL(_ url: String) -> URLConvertible {
         let str = baseURL.string
         let urlString = URLString(string: str + url)
         return urlString
@@ -60,68 +89,38 @@ extension RequestManager {
 
 //MARK: - Request Methods
 extension RequestManager {
-    public func request(_ method: Alamofire.Method,
-                 url: String,
-                 parameters: [String: AnyObject]?,
-                 success: SuccessResponse,
-                 failure: FailureResponse) {
-        
-        Alamofire.request(url, method: <#T##HTTPMethod#>, parameters: <#T##Parameters?#>, encoding: <#T##ParameterEncoding#>, headers: <#T##HTTPHeaders?#>)
-        
-        Alamofire.request(method, url, headers: headers, parameters: parameters, encoding: encoding)
-            .validate(statusCode: 200..<300)
-            .responseData{ response in
-                let dataString = String(data: response.data!, encoding: NSUTF8StringEncoding)
-                
+    public func request(method: HTTPMethod,
+                        route: Route.Type,
+                        parameters: [String: Any]?,
+                        success: SuccessResponse,
+                        failure: FailureResponse) throws -> DataRequest {
+        return try request(path: route.route, method: method, parameters: parameters, success: success, failure: failure)
+    }
+    
+    public func request(path: String,
+                        method: HTTPMethod,
+                        parameters: [String: Any]?,
+                        success: SuccessResponse,
+                        failure: FailureResponse) throws -> DataRequest {
+        try Reachability.checkConnectedToNetwork()
+        let url = try URLString(string: path)
+        return Alamofire.request(url, method: method, parameters: parameters).validate(statusCode: 200..<300)
+    }
+    
+    public func make(request: DataRequest, success: SuccessResponse, failure: FailureResponse, procesQueue: DispatchQueue = DispatchQueue.main) {
+        request.responseData { (response) in
+            let json = JSON(data: response.data)
+            
+            procesQueue.async {
                 switch response.result {
-                case .Success(let data):
-                    let json = JSON(data: data)
-                    if self.shouldPrintSuccedResponse {
-                        Log.debug("Request OK: \(response.request?.URL)")
-                        Log.debug("Response OK: \(dataString)")
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), { 
-                        success?(json, response: response)
-                    })
+                case .success(let data):
+                    success?(json, response.response)
                     break
-                case .Failure(let error):
-                    if self.shouldPrintFailuredResponse {
-                        Log.debug("Request ERROR: \(response.request?.URL)")
-                        Log.error("Response ERROR: \(dataString)")
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), {
-                        guard let data = response.data else {
-                            failure?(nil, error, response: response)
-                            return
-                        }
-                        
-                        let json = JSON(data: data)
-                        failure?(json, error, response: response)
-                    })
+                case .failure(let error):
+                    failure?(json, RequestManagerError.unknownError(nil), response.response)
                     break
                 }
-        }
-    }
-    
-    public func request(_ method: Alamofire.Method,
-                        baseURL: String,
-                        parameters: [String: AnyObject]?,
-                        success: SuccessResponse,
-                        failure: FailureResponse) {
-        request(method, url: fullURL(baseURL), parameters: parameters, success: success, failure: failure)
-    }
-    
-    public func request(_ method: Alamofire.Method,
-                        baseURL: String,
-                        parameters: [String: AnyObject]?,
-                        success: Success,
-                        failure: Failure) {
-        request(method, url: fullURL(baseURL), parameters: parameters, success: { (json, response) in
-            success?(json)
-            }) { (json, error, response) in
-                failure?(json, error)
+            }
         }
     }
 }

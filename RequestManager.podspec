@@ -32,9 +32,9 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'RequestManager/Classes/*.swift'
 
-  s.dependency 'Alamofire', '= 3.4'
-  s.dependency 'SwiftyJSON', '= 2.3.2'
-  s.dependency 'Log', '~> 0.5'
+  s.dependency 'Alamofire'#, '~> 3.4'
+  s.dependency 'SwiftyJSON'#, '= 2.3.2'
+  s.dependency 'Log'#, '~> 0.5'
   
   # s.resource_bundles = {
   #   'RequestManager' => ['RequestManager/Assets/*.png']

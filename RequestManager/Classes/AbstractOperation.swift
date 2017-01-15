@@ -8,44 +8,44 @@
 
 import Foundation
 
-public class AbstractOperation: NSOperation {
+open class AbstractOperation: Operation {
     public enum State: String {
         case Ready, Executing, Finished
         
-        private var keyPath: String {
+        fileprivate var keyPath: String {
             return "is" + rawValue
         }
     }
     
-    public var state = State.Ready {
+    open var state = State.Ready {
         willSet {
-            willChangeValueForKey(newValue.keyPath)
-            willChangeValueForKey(state.keyPath)
+            willChangeValue(forKey: newValue.keyPath)
+            willChangeValue(forKey: state.keyPath)
         }
         didSet {
-            didChangeValueForKey(oldValue.keyPath)
-            didChangeValueForKey(state.keyPath)
+            didChangeValue(forKey: oldValue.keyPath)
+            didChangeValue(forKey: state.keyPath)
         }
     }
     
-    override public var ready: Bool {
-        return super.ready && state == .Ready
+    override open var isReady: Bool {
+        return super.isReady && state == .Ready
     }
     
-    override public var executing: Bool {
+    override open var isExecuting: Bool {
         return state == .Executing
     }
     
-    override public var finished: Bool {
+    override open var isFinished: Bool {
         return state == .Finished
     }
     
-    override public var asynchronous: Bool {
+    override open var isAsynchronous: Bool {
         return true
     }
     
-    public override func start() {
-        if cancelled {
+    open override func start() {
+        if isCancelled {
             state = .Finished
             return
         }
@@ -54,7 +54,7 @@ public class AbstractOperation: NSOperation {
         state = .Executing
     }
     
-    public override func cancel() {
+    open override func cancel() {
         state = .Finished
     }
 }

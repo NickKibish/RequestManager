@@ -18,14 +18,30 @@ class ViewController: UIViewController {
         requestStatulLabel.text = "Loading..."
         requestStatulLabel.textColor = UIColor.lightGray
         
-        RequestManager.sharedInstance.shouldPrintSuccedResponse = true
-        RequestManager.sharedInstance.baseURL = URLString(string: requestURLTF.text!)
-        RequestManager.sharedInstance.request(.GET, baseURL: baseURLTF.text!, parameters: nil, success: { (json) in
-            self.requestStatulLabel.textColor = UIColor.greenColor()
-            self.requestStatulLabel.text = "OK"
-        }) { (jsor, error) in
-            self.requestStatulLabel.textColor = UIColor.redColor()
-            self.requestStatulLabel.text = "Error"
+        do {
+            let request = try RequestManager.sharedInstance.request(path: requestURLTF.text!, method: .get, parameters: nil)
+            RequestManager.sharedInstance.make(request: request, success: { (_, _) in
+                self.requestStatulLabel.textColor = UIColor.green
+                self.requestStatulLabel.text = "OK"
+            }, failure: { (_, _, _) in
+                self.requestStatulLabel.textColor = UIColor.red
+                self.requestStatulLabel.text = "Error"
+            })
+        } catch let error as RequestManagerError {
+            switch error {
+            case .isntReachable:
+                Log.error("isn't reachable")
+            case .needsConnection:
+                Log.error("Needs Connection")
+            case .wrongURL:
+                Log.error("Wrong URL")
+            case .unknownError(_):
+                Log.error("Unknown error")
+            default:
+                Log.error("Other Error")
+            }
+        } catch {
+            Log.error("Error")
         }
     }
 

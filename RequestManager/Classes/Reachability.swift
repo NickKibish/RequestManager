@@ -26,7 +26,7 @@ open class Reachability {
         if !((flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0) {
             throw RequestManagerError.isntReachable
         }
-        if !((flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0) {
+        if ((flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0) {
             throw RequestManagerError.needsConnection
         }
     }

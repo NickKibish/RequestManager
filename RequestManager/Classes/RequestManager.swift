@@ -69,8 +69,6 @@ open class RequestManager {
     public typealias Filure = (Error)
     
     open static let sharedInstance = RequestManager()
-    open var shouldPrintSuccedResponse = false
-    open var shouldPrintFailuredResponse = true
     open var baseURL: URLString = URLString(string: "")
 }
 
@@ -89,19 +87,15 @@ extension RequestManager {
 
 //MARK: - Request Methods
 extension RequestManager {
-    public func request(method: HTTPMethod,
-                        route: Route.Type,
-                        parameters: [String: Any]?,
-                        success: SuccessResponse,
-                        failure: FailureResponse) throws -> DataRequest {
-        return try request(path: route.route, method: method, parameters: parameters, success: success, failure: failure)
+    public func request(route: Route.Type,
+                        method: HTTPMethod,
+                        parameters: [String: Any]?) throws -> DataRequest {
+        return try request(path: route.route, method: method, parameters: parameters)
     }
     
     public func request(path: String,
                         method: HTTPMethod,
-                        parameters: [String: Any]?,
-                        success: SuccessResponse,
-                        failure: FailureResponse) throws -> DataRequest {
+                        parameters: [String: Any]?) throws -> DataRequest {
         try Reachability.checkConnectedToNetwork()
         let url = try URLString(string: path)
         return Alamofire.request(url, method: method, parameters: parameters).validate(statusCode: 200..<300)

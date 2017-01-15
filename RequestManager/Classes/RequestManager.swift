@@ -11,11 +11,17 @@ import Alamofire
 import SwiftyJSON
 import Log
 
-open class URLString: NSObject, URLStringConvertible {
+
+
+open class URLString: URLConvertible {
     open var string: String
     
     public init(string: String) {
         self.string = string
+    }
+    
+    public func asURL() throws -> URL {
+        return URL(string: <#T##String#>)
     }
     
     open var URLString: String {
@@ -29,7 +35,7 @@ open class URLString: NSObject, URLStringConvertible {
 open class RequestManager {
     public typealias Success = ((JSON?) -> ())?
     public typealias Failure = ((JSON?, NSError?) -> ())?
-    public typealias SuccessResponse = ((JSON?, _ response: Response<NSData, NSError>?) -> ())?
+    public typealias SuccessResponse = ((JSON?, _ response: URLR) -> ())?
     public typealias FailureResponse = ((JSON?, NSError?, _ response: Response<NSData, NSError>?) -> ())?
     
     open static let sharedInstance = RequestManager()
@@ -55,10 +61,12 @@ extension RequestManager {
 //MARK: - Request Methods
 extension RequestManager {
     public func request(_ method: Alamofire.Method,
-                 url: URLStringConvertible,
+                 url: String,
                  parameters: [String: AnyObject]?,
                  success: SuccessResponse,
                  failure: FailureResponse) {
+        
+        Alamofire.request(url, method: <#T##HTTPMethod#>, parameters: <#T##Parameters?#>, encoding: <#T##ParameterEncoding#>, headers: <#T##HTTPHeaders?#>)
         
         Alamofire.request(method, url, headers: headers, parameters: parameters, encoding: encoding)
             .validate(statusCode: 200..<300)

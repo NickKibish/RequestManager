@@ -30,8 +30,10 @@ public enum RequestManagerError: Error {
     case needsConnection
     
     case httpCode400(String?)
+    case httpCode401(String?)
     case httpCode403(String?)
     case httpCode404(String?)
+    case httpCode500(String?)
     
     case unknownError(String?)
 }
@@ -70,14 +72,11 @@ open class RequestManager {
     
     open static let sharedInstance = RequestManager()
     open var baseURL: URLString = URLString(string: "")
+    open var headers: HTTPHeaders? = nil
 }
 
 //MARK: - Util Methods 
 extension RequestManager {
-    public var headers: [String: String]? {
-        return nil
-    }
-    
     public func fullURL(_ url: String) -> URLConvertible {
         let str = baseURL.string
         let urlString = URLString(string: str + url)
@@ -89,16 +88,19 @@ extension RequestManager {
 extension RequestManager {
     public func request(route: Route.Type,
                         method: HTTPMethod,
-                        parameters: [String: Any]?) throws -> DataRequest {
-        return try request(path: route.route, method: method, parameters: parameters)
+                        parameters: [String: Any]?,
+                        headers: HTTPHeaders? = nil) throws -> DataRequest {
+        return try request(path: route.route, method: method, parameters: parameters, headers: headers)
     }
     
     public func request(path: String,
                         method: HTTPMethod,
-                        parameters: [String: Any]?) throws -> DataRequest {
+                        parameters: [String: Any]?,
+                        headers: HTTPHeaders? = nil) throws -> DataRequest {
         try Reachability.checkConnectedToNetwork()
         let url = try URLString(string: path)
-        return Alamofire.request(url, method: method, parameters: parameters).validate(statusCode: 200..<300)
+        return Alamofire.request(url, method: method, parameters: parameters, encoding: URLEncoding.default,
+                                 headers: headers).validate(statusCode: 200..<300)
     }
     
     public func make(request: DataRequest, success: SuccessResponse, failure: FailureResponse, procesQueue: DispatchQueue = DispatchQueue.main) {
@@ -112,6 +114,21 @@ extension RequestManager {
                     break
                 case .failure(let error):
                     failure?(json, RequestManagerError.unknownError(nil), response.response)
+                    
+                    guard let statusCode = response.response?.statusCode else {
+                        failure?(json, RequestManagerError.unknownError(nil), response.response)
+                        return
+                    }
+                    switch statusCode {
+                    case 400: failure?(json, RequestManagerError.httpCode400(nil), response.response); break
+                    case 401: failure?(json, RequestManagerError.httpCode401(nil), response.response); break
+                    case 403: failure?(json, RequestManagerError.httpCode403(nil), response.response); break
+                    case 404: failure?(json, RequestManagerError.httpCode404(nil), response.response); break
+                    case 500: failure?(json, RequestManagerError.httpCode500(nil), response.response); break
+                    default:
+                        failure?(json, RequestManagerError.unknownError(nil), response.response)
+                    }
+                    
                     break
                 }
             }

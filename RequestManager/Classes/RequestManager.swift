@@ -61,14 +61,10 @@ open class URLString: URLConvertible {
 }
 
 open class RequestManager {
-    public typealias Success = ((JSON?) -> ())?
-    public typealias Failure = ((JSON?, NSError?) -> ())?
-    public typealias SuccessResponse = ((JSON?, _ response: HTTPURLResponse?) -> ())?
-    public typealias FailureResponse = ((JSON?, Error, _ response: HTTPURLResponse?) -> ())?
-    
-    public typealias SuccessArray<T> = ([T]) -> ()
-    public typealias SuccessDictionary<T> = ([String:T]) -> ()
-    public typealias Filure = (Error)
+    public typealias SuccessResponse = ( (_ json: JSON?, _ response: HTTPURLResponse?) -> () )?
+    public typealias SuccessArray<T> = ( ([T]) -> () )?
+    public typealias SuccessDictionary = ( ([String:Any]) -> () )?
+    public typealias Failure = ( (_ error: Error, _ json: JSON?) -> () )?
     
     open static let sharedInstance = RequestManager()
     open var baseURL: URLString = URLString(string: "")
@@ -103,7 +99,7 @@ extension RequestManager {
                                  headers: headers).validate(statusCode: 200..<300)
     }
     
-    public func make(request: DataRequest, success: SuccessResponse, failure: FailureResponse, procesQueue: DispatchQueue = DispatchQueue.main) {
+    public func make(request: DataRequest, success: SuccessResponse, failure: Failure, procesQueue: DispatchQueue = DispatchQueue.main) {
         request.responseData { (response) in
             let json = JSON(data: response.data)
             
@@ -113,20 +109,18 @@ extension RequestManager {
                     success?(json, response.response)
                     break
                 case .failure(let error):
-                    failure?(json, RequestManagerError.unknownError(nil), response.response)
-                    
                     guard let statusCode = response.response?.statusCode else {
-                        failure?(json, RequestManagerError.unknownError(nil), response.response)
+                        failure?(RequestManagerError.unknownError(nil), json)
                         return
                     }
                     switch statusCode {
-                    case 400: failure?(json, RequestManagerError.httpCode400(nil), response.response); break
-                    case 401: failure?(json, RequestManagerError.httpCode401(nil), response.response); break
-                    case 403: failure?(json, RequestManagerError.httpCode403(nil), response.response); break
-                    case 404: failure?(json, RequestManagerError.httpCode404(nil), response.response); break
-                    case 500: failure?(json, RequestManagerError.httpCode500(nil), response.response); break
+                    case 400: failure?(RequestManagerError.httpCode400(nil), json); break
+                    case 401: failure?(RequestManagerError.httpCode401(nil), json); break
+                    case 403: failure?(RequestManagerError.httpCode403(nil), json); break
+                    case 404: failure?(RequestManagerError.httpCode404(nil), json); break
+                    case 500: failure?(RequestManagerError.httpCode500(nil), json); break
                     default:
-                        failure?(json, RequestManagerError.unknownError(nil), response.response)
+                        failure?(RequestManagerError.unknownError(nil), json)
                     }
                     
                     break

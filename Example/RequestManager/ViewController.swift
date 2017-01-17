@@ -14,25 +14,41 @@ class ViewController: UIViewController {
     @IBOutlet var requestURLTF: UITextField!
     @IBOutlet var baseURLTF: UITextField!
     
-    @IBAction func makeRequest(sender: AnyObject) {
+    @IBAction func makeRequest(_ sender: AnyObject) {
         requestStatulLabel.text = "Loading..."
-        requestStatulLabel.textColor = UIColor.lightGrayColor()
+        requestStatulLabel.textColor = UIColor.lightGray
         
-        RequestManager.sharedInstance.shouldPrintSuccedResponse = true
-        RequestManager.sharedInstance.baseURL = URLString(string: requestURLTF.text!)
-        RequestManager.sharedInstance.request(.GET, baseURL: baseURLTF.text!, parameters: nil, success: { (json) in
-            self.requestStatulLabel.textColor = UIColor.greenColor()
-            self.requestStatulLabel.text = "OK"
-        }) { (jsor, error) in
-            self.requestStatulLabel.textColor = UIColor.redColor()
-            self.requestStatulLabel.text = "Error"
+        do {
+            let request = try RequestManager.sharedInstance.request(path: requestURLTF.text!, method: .get, parameters: nil)
+            RequestManager.sharedInstance.make(request: request, success: { (_, _) in
+                self.requestStatulLabel.textColor = UIColor.green
+                self.requestStatulLabel.text = "OK"
+            }, failure: { (_, _, _) in
+                self.requestStatulLabel.textColor = UIColor.red
+                self.requestStatulLabel.text = "Error"
+            })
+        } catch let error as RequestManagerError {
+            switch error {
+            case .isntReachable:
+                Log.error("isn't reachable")
+            case .needsConnection:
+                Log.error("Needs Connection")
+            case .wrongURL:
+                Log.error("Wrong URL")
+            case .unknownError(_):
+                Log.error("Unknown error")
+            default:
+                Log.error("Other Error")
+            }
+        } catch {
+            Log.error("Error")
         }
     }
 
 }
 
 extension ViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true 
     }

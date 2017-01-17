@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'RequestManager'
-  s.version          = '0.3.4'
+  s.version          = '0.3.1'
   s.summary          = 'A short description of RequestManager.'
 
 # This description is used to generate tags and improve search results.
